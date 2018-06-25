@@ -4,9 +4,17 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+		panic(err)
+	}
+
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         "127.0.0.1:8989",
