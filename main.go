@@ -1,45 +1,20 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
 	"net/http"
-	"strings"
-
-	firebase "firebase.google.com/go"
-	"github.com/davecgh/go-spew/spew"
-	"google.golang.org/api/option"
+	"time"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		opt := option.WithCredentialsFile("./admin_sdk.json")
-		app, err := firebase.NewApp(context.Background(), nil, opt)
-		if err != nil {
-			panic(err)
-		}
-		client, err := app.Auth(context.Background())
-		if err != nil {
-			log.Fatalf("error getting Auth client: %v\n", err)
-		}
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         "127.0.0.1:8989",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
 
-		reqToken := r.Header.Get("Authorization")
-		splitToken := strings.Split(reqToken, "Bearer")
-		if len(splitToken) > 1 {
-			reqToken = strings.Trim(splitToken[1], " ")
-			spew.Dump(reqToken)
-			token, err := client.VerifyIDToken(r.Context(), reqToken)
-			if err != nil {
-				log.Fatalf("error verifying ID token: %v\n", err)
-			}
-
-			log.Printf("Verified ID token: %v\n", token)
-		}
-		setupResponse(&w, r)
-		fmt.Fprintf(w, "Hello")
-	})
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	log.Fatal(srv.ListenAndServe())
 }
 
 func enableCors(w *http.ResponseWriter) {
