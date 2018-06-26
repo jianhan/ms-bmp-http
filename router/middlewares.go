@@ -10,7 +10,7 @@ import (
 	"gopkg.in/square/go-jose.v2"
 )
 
-func authMiddleware(next http.Handler) http.Handler {
+func auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Decode secret
 		secret, err := base64.URLEncoding.DecodeString(os.Getenv("AUTH0_CLIENT_SECRET"))

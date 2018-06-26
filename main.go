@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jianhan/ms-bmp-http/router"
 	"github.com/joho/godotenv"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      router.NewRouter(),
 		Addr:         "127.0.0.1:8989",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
